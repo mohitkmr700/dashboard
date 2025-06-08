@@ -1,16 +1,16 @@
 export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  progress: number;
+  deadline: string;
+  is_done: boolean;
+  created: string;
+  updated: string;
+  completed_at: string | null;
+  email: string;
   collectionId?: string;
   collectionName?: string;
-  completed_at?: string;
-  created: string;
-  deadline: string;
-  description: string;
-  email: string;
-  id: string;
-  is_done: boolean;
-  progress: number;
-  title: string;
-  updated: string;
 }
 
 export interface TasksResponse {
@@ -22,5 +22,5 @@ export interface TasksResponse {
 export interface TableColumn<T> {
   header: string;
   accessor: keyof T;
-  render?: (value: any, item: T) => React.ReactNode;
+  render?: (value: T[keyof T] | null | undefined, item: T) => React.ReactNode;
 } 

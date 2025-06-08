@@ -35,6 +35,7 @@ export default function CreateTaskDialog({ onTaskCreated }: CreateTaskDialogProp
         progress: 0,
         is_done: false,
         email: 'mohit2010sm@gmail.com',
+        completed_at: null
       };
 
       console.log('Sending task data:', taskData); // Debug log

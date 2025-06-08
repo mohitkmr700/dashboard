@@ -181,19 +181,19 @@ export default function DashboardPage() {
     { 
       header: 'Title', 
       accessor: 'title',
-      render: (value: string, task: Task) => (
+      render: (value, task: Task) => (
         <button
           onClick={() => handleEditClick(task)}
           className="text-left hover:text-primary transition-colors"
         >
-          {value}
+          {value as string}
         </button>
       ),
     },
     { 
       header: 'Status', 
       accessor: 'is_done',
-      render: (value: boolean, task: Task) => {
+      render: (value, task: Task) => {
         const status = getTaskStatus(task);
         return (
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${status.className}`}>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
     { 
       header: 'Progress', 
       accessor: 'progress',
-      render: (value: number, task: Task) => {
+      render: (value, task: Task) => {
         const status = getTaskStatus(task);
         const progressColor = status.text === 'Completed' 
           ? 'bg-green-500' 
@@ -219,7 +219,7 @@ export default function DashboardPage() {
           <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5">
             <div 
               className={`${progressColor} h-2.5 rounded-full transition-all duration-300`}
-              style={{ width: `${value}%` }}
+              style={{ width: `${(value as number) ?? 0}%` }}
             ></div>
           </div>
         );
@@ -228,23 +228,23 @@ export default function DashboardPage() {
     { 
       header: 'Deadline', 
       accessor: 'deadline',
-      render: (value: string) => formatDate(value)
+      render: (value) => formatDate(value as string ?? '')
     },
     { header: 'Description', accessor: 'description' },
     { 
       header: 'Created', 
       accessor: 'created',
-      render: (value: string) => formatDate(value)
+      render: (value) => formatDate(value as string ?? '')
     },
     { 
       header: 'Updated', 
       accessor: 'updated',
-      render: (value: string) => formatDate(value)
+      render: (value) => formatDate(value as string ?? '')
     },
     { 
       header: 'Completed', 
       accessor: 'completed_at',
-      render: (value: string) => {
+      render: (value) => {
         if (!value) {
           return (
             <div className="flex items-center justify-center">
@@ -255,7 +255,7 @@ export default function DashboardPage() {
         return (
           <div className="flex items-center text-green-500 dark:text-green-400">
             <Check className="w-4 h-4 mr-1" />
-            <span className="text-xs">{formatDate(value)}</span>
+            <span className="text-xs">{formatDate(value as string)}</span>
           </div>
         );
       }
@@ -263,7 +263,7 @@ export default function DashboardPage() {
     {
       header: 'Actions',
       accessor: 'id',
-      render: (value: string, task: Task) => (
+      render: (value, task: Task) => (
         <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
