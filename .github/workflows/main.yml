@@ -43,7 +43,6 @@ jobs:
           script: |
             cd /var/www/dashboard
             git pull origin main
-            echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.production
             npm ci
             npm run build
-            pm2 restart dashboard || pm2 start npm --name dashboard -- start
+            pm2 restart dashboard
