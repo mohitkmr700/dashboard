@@ -1,4 +1,7 @@
 import { Task, TasksResponse } from '@/types/task';
+import { ApiResponse } from '@/types';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://algoarena.co.in/api';
 
 export async function getTasks(email: string): Promise<TasksResponse> {
   try {
@@ -50,7 +53,7 @@ export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' |
 
 export async function deleteTask(id: string): Promise<void> {
   try {
-    const response = await fetch('/api/tasks', {
+    const response = await fetch('/api/tasks/remove', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
