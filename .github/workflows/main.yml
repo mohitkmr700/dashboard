@@ -9,9 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    env:
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -19,7 +16,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # your node version
+          node-version: 18
+
+      - name: Set environment variable
+        run: echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: npm ci
@@ -43,6 +43,7 @@ jobs:
           script: |
             cd /var/www/dashboard
             git pull origin main
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.production
             npm ci
             npm run build
-            pm2 restart dashboard
+            pm2 restart dashboard || pm2 start npm --name dashboard -- start
