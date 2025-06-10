@@ -3,7 +3,12 @@ name: Deploy Next.js app
 on:
   push:
     branches:
-      - main  # or your deployment branch
+      - main
+
+# Prevent concurrent deployments
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -11,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -34,7 +39,39 @@ jobs:
           path: .next
 
       - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script: |
+            # Navigate to app directory
+            cd /var/www/dashboard
+
+            # Stop and delete existing PM2 process to avoid duplicates
+            pm2 stop dashboard || true
+            pm2 delete dashboard || true
+
+            # Remove old .next directory
+            rm -rf .next
+
+            # Create directory for artifacts
+            mkdir -p .next
+
+            # Copy artifacts (will be handled by download-artifact)
+            echo "Ready to receive artifacts"
+
+      - name: Download build artifacts to server
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: /var/www/dashboard/.next
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Finalize deployment
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
@@ -42,7 +79,17 @@ jobs:
           port: 22
           script: |
             cd /var/www/dashboard
-            git pull origin main
-            npm ci
-            npm run build
-            pm2 restart dashboard
+            npm ci --production # Install only production dependencies
+            pm2 start npm --name "dashboard" -- start
+            pm2 save
+
+            # Reload Nginx to apply any changes
+            sudo systemctl reload nginx
+
+            # Purge Akamai cache (requires Akamai CLI installed on server)
+            akamai purge --url https://your-domain.com/* || echo "Akamai purge failed"
+
+      - name: Verify deployment
+        run: |
+          sleep 10 # Wait for deployment to stabilize
+          curl -f https://your-domain.com || exit 1
