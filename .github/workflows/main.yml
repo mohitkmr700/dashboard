@@ -1,4 +1,4 @@
-name: Deploy Next.js app
+name: Dashboard Deployment
 
 on:
   push:
