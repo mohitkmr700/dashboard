@@ -4,7 +4,7 @@ import { ApiResponse } from '@/types';
 export async function getTasks(email: string): Promise<TasksResponse> {
   try {
     console.log('Fetching tasks for email:', email);
-    const response = await fetch(`/api/tasks?email=${encodeURIComponent(email)}`);
+    const response = await fetch(`/api/tasks/list?email=${encodeURIComponent(email)}`);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -22,7 +22,7 @@ export async function getTasks(email: string): Promise<TasksResponse> {
 
 export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'>): Promise<Task> {
   try {
-    const response = await fetch('/api/tasks', {
+    const response = await fetch('/api/tasks/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export async function deleteTask(id: string): Promise<void> {
 
 export async function updateTask(task: Task): Promise<Task> {
   try {
-    const response = await fetch('/api/tasks', {
+    const response = await fetch('/api/tasks/update', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
