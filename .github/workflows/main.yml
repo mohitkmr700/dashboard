@@ -31,18 +31,6 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nextjs-build
-          path: .next
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: nextjs-build
-          path: nextjs-artifact
-
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
@@ -50,9 +38,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Copy build to server
+      - name: Copy .next build folder to server
         run: |
-          scp -r nextjs-artifact/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/dashboard/.next
+          scp -r .next ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/dashboard/
 
       - name: Finalize deployment on server
         uses: appleboy/ssh-action@v1.0.3
@@ -64,21 +52,14 @@ jobs:
           script: |
             cd /var/www/dashboard
 
-            # Stop and remove existing process
             pm2 stop dashboard || true
             pm2 delete dashboard || true
 
-            # Reinstall production dependencies
             npm ci --production
-
-            # Start with PM2
             pm2 start npm --name "dashboard" -- start
             pm2 save
 
-            # Reload Nginx
             sudo systemctl reload nginx
-
-            # Purge Akamai cache
             akamai purge --url https://algoarena.co.in/* || echo "Akamai purge failed"
 
       - name: Verify deployment
