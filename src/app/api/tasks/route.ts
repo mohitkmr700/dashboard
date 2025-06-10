@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-
     console.log('Fetching tasks from:', `${API_URL}/tasks?email=${email}`);
 
     const response = await fetch(`${API_URL}/tasks/list?email=${email}`, {
