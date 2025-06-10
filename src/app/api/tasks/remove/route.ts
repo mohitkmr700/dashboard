@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function DELETE(request: Request) {
   try {
     const body = await request.json();
@@ -9,7 +11,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Task ID is required' }, { status: 400 });
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/remove`, {
+    const response = await fetch(`${API_URL}/tasks/remove`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

@@ -1,8 +1,6 @@
 import { Task, TasksResponse } from '@/types/task';
 import { ApiResponse } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://algoarena.co.in/api';
-
 export async function getTasks(email: string): Promise<TasksResponse> {
   try {
     console.log('Fetching tasks for email:', email);
