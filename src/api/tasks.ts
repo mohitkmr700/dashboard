@@ -1,10 +1,17 @@
 import { Task, TasksResponse } from '@/types/task';
 import { ApiResponse } from '@/types';
 
+const getBaseUrl = (endpoint: string) => {
+  const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+  const baseUrl = isLocalhost ? process.env.NEXT_PUBLIC_API_URL : '';
+  const path = isLocalhost ? endpoint.replace('api/', '') : endpoint;
+  return `${baseUrl}${path}`;
+};
+
 export async function getTasks(email: string): Promise<TasksResponse> {
   try {
     console.log('Fetching tasks for email:', email);
-    const response = await fetch(`/api/tasks/list?email=${encodeURIComponent(email)}`);
+    const response = await fetch(getBaseUrl('/api/tasks/list') + `?email=${encodeURIComponent(email)}`);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -22,7 +29,7 @@ export async function getTasks(email: string): Promise<TasksResponse> {
 
 export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'>): Promise<Task> {
   try {
-    const response = await fetch('/api/tasks/create', {
+    const response = await fetch(getBaseUrl('/api/tasks/create'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +58,7 @@ export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' |
 
 export async function deleteTask(id: string): Promise<void> {
   try {
-    const response = await fetch('/api/tasks/remove', {
+    const response = await fetch(getBaseUrl('/api/tasks/remove'), {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +78,7 @@ export async function deleteTask(id: string): Promise<void> {
 
 export async function updateTask(task: Task): Promise<Task> {
   try {
-    const response = await fetch('/api/tasks/update', {
+    const response = await fetch(getBaseUrl('/api/tasks/update'), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
