@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-# Prevent concurrent deployments
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
@@ -38,39 +37,24 @@ jobs:
           name: nextjs-build
           path: .next
 
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 22
-          script: |
-            # Navigate to app directory
-            cd /var/www/dashboard
-
-            # Stop and delete existing PM2 process to avoid duplicates
-            pm2 stop dashboard || true
-            pm2 delete dashboard || true
-
-            # Remove old .next directory
-            rm -rf .next
-
-            # Create directory for artifacts
-            mkdir -p .next
-
-            # Copy artifacts (will be handled by download-artifact)
-            echo "Ready to receive artifacts"
-
-      - name: Download build artifacts to server
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
-          path: /var/www/dashboard/.next
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: nextjs-artifact
 
-      - name: Finalize deployment
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Copy build to server
+        run: |
+          scp -r nextjs-artifact/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/dashboard/.next
+
+      - name: Finalize deployment on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -79,17 +63,25 @@ jobs:
           port: 22
           script: |
             cd /var/www/dashboard
-            npm ci --production # Install only production dependencies
+
+            # Stop and remove existing process
+            pm2 stop dashboard || true
+            pm2 delete dashboard || true
+
+            # Reinstall production dependencies
+            npm ci --production
+
+            # Start with PM2
             pm2 start npm --name "dashboard" -- start
             pm2 save
 
-            # Reload Nginx to apply any changes
+            # Reload Nginx
             sudo systemctl reload nginx
 
-            # Purge Akamai cache (requires Akamai CLI installed on server)
-            akamai purge --url https://your-domain.com/* || echo "Akamai purge failed"
+            # Purge Akamai cache
+            akamai purge --url https://algoarena.co.in/* || echo "Akamai purge failed"
 
       - name: Verify deployment
         run: |
-          sleep 10 # Wait for deployment to stabilize
-          curl -f https://your-domain.com || exit 1
+          sleep 10
+          curl -f https://algoarena.co.in/ || exit 1
