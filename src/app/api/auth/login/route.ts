@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-const API_URL = `${process.env.NEXT_PUBLIC_AUTH_API_URL}/auth/login`;
+const getAuthApiUrl = () => {
+  const isLocalhost = process.env.NODE_ENV === 'development';
+  const baseUrl = isLocalhost ? process.env.NEXT_PUBLIC_AUTH_API_URL : process.env.NEXT_PUBLIC_AUTH_API_URL;
+  return `${baseUrl}/auth/login`;
+};
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     console.log('Login request body:', body);
+    
+    const API_URL = getAuthApiUrl();
+    console.log('Using auth API URL:', API_URL);
     
     const response = await fetch(API_URL, {
       method: 'POST',
