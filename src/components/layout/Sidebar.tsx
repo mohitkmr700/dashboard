@@ -3,15 +3,28 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants';
 import { cn } from '@/lib/utils';
+import { hasRole } from '@/lib/auth-client';
 
-const navigation = [
+const baseNavigation = [
   { name: 'Dashboard', href: ROUTES.DASHBOARD },
   { name: 'Profile', href: ROUTES.PROFILE },
+];
+
+const punisherNavigation = [
+  { name: 'Tasks', href: '/tasks' },
+  { name: 'Users', href: '/users' },
+  { name: 'Reports', href: '/reports' },
   { name: 'Settings', href: ROUTES.SETTINGS },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const isPunisher = hasRole('punisher');
+
+  const navigation = [
+    ...baseNavigation,
+    ...(isPunisher ? punisherNavigation : []),
+  ];
 
   return (
     <div className="w-64 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800">

@@ -1,7 +1,12 @@
 import { redirect } from 'next/navigation';
-import Image from "next/image";
+import { isAuthenticatedServer } from '@/lib/auth-server';
 
-export default function Home() {
+export default async function Home() {
+  const authenticated = await isAuthenticatedServer();
+
+  if (!authenticated) {
+    redirect('/login');
+  }
+
   redirect('/dashboard');
-  return null;
 }

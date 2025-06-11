@@ -1,5 +1,16 @@
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import { redirect } from 'next/navigation';
+import { isAuthenticatedServer } from '@/lib/auth-server';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <DashboardLayout>{children}</DashboardLayout>;
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const authenticated = await isAuthenticatedServer();
+  
+  if (!authenticated) {
+    redirect('/login');
+  }
+
+  return <>{children}</>;
 } 

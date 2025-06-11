@@ -29,7 +29,8 @@ export async function getTasks(email: string): Promise<TasksResponse> {
 
 export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'>): Promise<Task> {
   try {
-    const response = await fetch(getBaseUrl('/api/tasks/create'), {
+    console.log('Creating task with data:', task);
+    const response = await fetch('/api/tasks/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,14 +43,18 @@ export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' |
         is_done: task.is_done,
         email: task.email,
       }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Error response:', errorData);
       throw new Error(errorData.error || 'Failed to create task');
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log('Task created successfully:', data);
+    return data;
   } catch (error) {
     console.error('Error creating task:', error);
     throw error;
@@ -58,18 +63,23 @@ export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' |
 
 export async function deleteTask(id: string): Promise<void> {
   try {
-    const response = await fetch(getBaseUrl('/api/tasks/remove'), {
+    console.log('Deleting task with ID:', id);
+    const response = await fetch('/api/tasks/remove', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ id }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Error response:', errorData);
       throw new Error(errorData.error || 'Failed to delete task');
     }
+
+    console.log('Task deleted successfully');
   } catch (error) {
     console.error('Error deleting task:', error);
     throw error;
@@ -78,7 +88,8 @@ export async function deleteTask(id: string): Promise<void> {
 
 export async function updateTask(task: Task): Promise<Task> {
   try {
-    const response = await fetch(getBaseUrl('/api/tasks/update'), {
+    console.log('Updating task with data:', task);
+    const response = await fetch('/api/tasks/update', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -93,14 +104,18 @@ export async function updateTask(task: Task): Promise<Task> {
         completed_at: task.completed_at,
         email: task.email,
       }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Error response:', errorData);
       throw new Error(errorData.error || 'Failed to update task');
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log('Task updated successfully:', data);
+    return data;
   } catch (error) {
     console.error('Error updating task:', error);
     throw error;

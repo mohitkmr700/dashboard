@@ -3,16 +3,29 @@ import { NextRequest, NextResponse } from 'next/server';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 console.log('API_URL:', API_URL);
 
+// Helper function to add CORS headers
+function addCorsHeaders(response: NextResponse) {
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  return response;
+}
+
+// Handle OPTIONS request for CORS preflight
+export async function OPTIONS() {
+  return addCorsHeaders(new NextResponse(null, { status: 204 }));
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const email = searchParams.get('email');
 
     if (!email) {
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         { error: 'Email parameter is required' },
         { status: 400 }
-      );
+      ));
     }
     console.log('Fetching tasks from:', `${API_URL}/tasks?email=${email}`);
 
@@ -29,13 +42,13 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return addCorsHeaders(NextResponse.json(data));
   } catch (error) {
     console.error('Error fetching tasks:', error);
-    return NextResponse.json(
+    return addCorsHeaders(NextResponse.json(
       { error: 'Failed to fetch tasks. Please check your API configuration.' },
       { status: 500 }
-    );
+    ));
   }
 }
 
@@ -59,13 +72,13 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return addCorsHeaders(NextResponse.json(data));
   } catch (error) {
     console.error('Error creating task:', error);
-    return NextResponse.json(
+    return addCorsHeaders(NextResponse.json(
       { error: 'Failed to create task. Please check your API configuration.' },
       { status: 500 }
-    );
+    ));
   }
 }
 
@@ -89,13 +102,13 @@ export async function PUT(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return addCorsHeaders(NextResponse.json(data));
   } catch (error) {
     console.error('Error updating task:', error);
-    return NextResponse.json(
+    return addCorsHeaders(NextResponse.json(
       { error: 'Failed to update task. Please check your API configuration.' },
       { status: 500 }
-    );
+    ));
   }
 }
 
@@ -105,10 +118,10 @@ export async function DELETE(request: NextRequest) {
     const taskId = searchParams.get('id');
 
     if (!taskId) {
-      return NextResponse.json(
+      return addCorsHeaders(NextResponse.json(
         { error: 'Task ID is required' },
         { status: 400 }
-      );
+      ));
     }
 
     console.log('Deleting task at:', `${API_URL}/tasks/delete?id=${taskId}`);
@@ -127,12 +140,12 @@ export async function DELETE(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return addCorsHeaders(NextResponse.json(data));
   } catch (error) {
     console.error('Error deleting task:', error);
-    return NextResponse.json(
+    return addCorsHeaders(NextResponse.json(
       { error: 'Failed to delete task. Please check your API configuration.' },
       { status: 500 }
-    );
+    ));
   }
 } 

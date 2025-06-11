@@ -6,7 +6,7 @@ console.log('API_URL:', API_URL);
 // Helper function to add CORS headers
 function addCorsHeaders(response: NextResponse) {
   response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'DELETE, OPTIONS');
+  response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   return response;
 }
@@ -16,27 +16,18 @@ export async function OPTIONS() {
   return addCorsHeaders(new NextResponse(null, { status: 204 }));
 }
 
-export async function DELETE(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id } = body;
+    console.log('Creating task at:', `${API_URL}/tasks/create`);
+    console.log('Request body:', body);
 
-    if (!id) {
-      return addCorsHeaders(NextResponse.json(
-        { error: 'Task ID is required' },
-        { status: 400 }
-      ));
-    }
-
-    console.log('Removing task at:', `${API_URL}/tasks/remove`);
-    console.log('Task ID:', id);
-
-    const response = await fetch(`${API_URL}/tasks/remove`, {
-      method: 'DELETE',
+    const response = await fetch(`${API_URL}/tasks/create`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
@@ -48,9 +39,9 @@ export async function DELETE(request: NextRequest) {
     const data = await response.json();
     return addCorsHeaders(NextResponse.json(data));
   } catch (error) {
-    console.error('Error removing task:', error);
+    console.error('Error creating task:', error);
     return addCorsHeaders(NextResponse.json(
-      { error: 'Failed to remove task. Please check your API configuration.' },
+      { error: 'Failed to create task. Please check your API configuration.' },
       { status: 500 }
     ));
   }

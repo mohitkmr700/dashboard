@@ -119,8 +119,11 @@ export default function EditTaskDialog({
               type="number"
               min="0"
               max="100"
-              value={formData.progress}
-              onChange={(e) => setFormData({ ...formData, progress: parseInt(e.target.value) })}
+              value={formData.progress?.toString() ?? '0'}
+              onChange={(e) => {
+                const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+                setFormData({ ...formData, progress: value });
+              }}
               required
             />
           </div>

@@ -1,10 +1,16 @@
 "use client";
 import { ReactNode, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
 import { getStorageItem, setStorageItem } from '@/lib/utils/storage';
+import { Button } from '@/components/ui/button';
+import { LogOut } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [isDark, setIsDark] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Get theme preference from storage or use system preference
@@ -34,18 +40,66 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('dark');
   };
 
+  const handleLogout = async () => {
+    try {
+      // Call the logout API endpoint
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to logout');
+      }
+
+      // Clear any local storage items
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Show success toast
+      toast({
+        variant: "success",
+        title: "Logged out successfully",
+        description: "You have been logged out of your account.",
+      });
+      
+      // Redirect to login page
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to logout. Please try again.",
+      });
+    }
+  };
+
   return (
     <div className="flex h-screen bg-white dark:bg-black">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <header className="h-16 flex items-center justify-end px-8 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
-            aria-label="Toggle theme"
-          >
-            {isDark ? '🌞' : '🌑'}
-          </button>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              size="icon"
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              aria-label="Logout"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDark ? '🌞' : '🌑'}
+            </button>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-8 bg-white dark:bg-black">
           {children}
