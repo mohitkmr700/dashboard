@@ -53,20 +53,11 @@ export async function POST(request: Request) {
         name: 'access_token',
         value: cookieValue,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         sameSite: 'lax',
         path: '/',
         maxAge: 3600,
-      });
-
-      // Log the cookie settings
-      console.log('Cookie settings:', {
-        name: 'access_token',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 3600
+        domain: '.algoarena.co.in'
       });
     }
 
