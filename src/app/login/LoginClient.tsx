@@ -73,7 +73,7 @@ export default function LoginClient({ initialAuthState }: LoginClientProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': '*/*',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
           email: email.trim(),
