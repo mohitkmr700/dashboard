@@ -40,41 +40,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('dark');
   };
 
-  const handleLogout = async () => {
-    try {
-      // Call the logout API endpoint
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to logout');
-      }
-
-      // Clear any local storage items
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Show success toast
-      toast({
-        variant: "success",
-        title: "Logged out successfully",
-        description: "You have been logged out of your account.",
-      });
-      
-      // Redirect to login page
-      router.push('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to logout. Please try again.",
-      });
-    }
+  const handleLogout = () => {
+    // Delete all cookies
+    document.cookie.split(";").forEach(function(c) { 
+      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    
+    // Redirect to login page
+    router.push('/login');
   };
 
   return (
