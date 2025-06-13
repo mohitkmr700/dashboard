@@ -40,14 +40,30 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('dark');
   };
 
-  const handleLogout = () => {
-    // Delete all cookies
-    document.cookie.split(";").forEach(function(c) { 
-      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-    });
-    
-    // Redirect to login page
-    router.push('/login');
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+
+      // Redirect to login page
+      router.push('/login');
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to logout. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
