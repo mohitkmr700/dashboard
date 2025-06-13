@@ -23,11 +23,11 @@ const nextConfig = {
     return [
       {
         source: '/api/auth/login',
-        destination: `${process.env.NEXT_PUBLIC_AUTH_API_URL}/auth/login`,
+        destination: 'https://algoarena.co.in/api/auth/auth/login',
       },
       {
         source: '/api/auth/:path*',
-        destination: `${process.env.NEXT_PUBLIC_AUTH_API_URL}/auth/:path*`,
+        destination: 'https://algoarena.co.in/api/auth/:path*',
       },
     ];
   },
