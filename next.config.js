@@ -18,19 +18,6 @@ const nextConfig = {
       },
     ];
   },
-  // Add rewrites for API calls
-  async rewrites() {
-    return [
-      {
-        source: '/api/auth/login',
-        destination: 'https://algoarena.co.in/api/auth/auth/login',
-      },
-      {
-        source: '/api/auth/:path*',
-        destination: 'https://algoarena.co.in/api/auth/:path*',
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig; 

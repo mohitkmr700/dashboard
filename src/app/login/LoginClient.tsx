@@ -79,7 +79,7 @@ export default function LoginClient({ initialAuthState }: LoginClientProps) {
           email: email.trim(),
           password: password.trim()
         }),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const data = await response.json();

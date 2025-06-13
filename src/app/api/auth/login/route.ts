@@ -1,28 +1,20 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-const getAuthApiUrl = () => {
-  return `${process.env.NEXT_PUBLIC_AUTH_API_URL}/auth/login`;
-};
-
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('Login request body:', body);
     
-    const API_URL = getAuthApiUrl();
-    console.log('Using auth API URL:', API_URL);
-    
-    const response = await fetch(API_URL, {
+    const response = await fetch('https://algoarena.co.in/api/auth/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify(body),
     });
 
     const data = await response.json();
-    console.log('API response:', data);
 
     if (!response.ok) {
       return NextResponse.json(
@@ -36,7 +28,7 @@ export async function POST(request: Request) {
     console.log('Set-Cookie header from API:', setCookieHeader);
 
     // Create the response
-    const res = NextResponse.json(data, { status: 201 });
+    const res = NextResponse.json(data, { status: 200 });
 
     // If there's a Set-Cookie header, set it in our response
     if (setCookieHeader) {
@@ -44,7 +36,7 @@ export async function POST(request: Request) {
       const cookieValue = setCookieHeader.split(';')[0].split('=')[1];
       console.log('Setting cookie with value:', cookieValue);
 
-      // Set the cookie in our response with modified settings
+      // Set the cookie in our response
       res.cookies.set({
         name: 'access_token',
         value: cookieValue,
@@ -52,17 +44,7 @@ export async function POST(request: Request) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 3600,
-      });
-
-      // Log the cookie settings
-      console.log('Cookie settings:', {
-        name: 'access_token',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 3600
+        maxAge: 3600, // 1 hour
       });
     }
 
