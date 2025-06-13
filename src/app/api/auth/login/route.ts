@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 const getAuthApiUrl = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
-  if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_AUTH_API_URL is not defined');
-  }
-  return `${baseUrl}/auth/login`;
+  return `${process.env.NEXT_PUBLIC_AUTH_API_URL}/auth/login`;
 };
 
 export async function POST(request: Request) {
