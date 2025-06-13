@@ -43,7 +43,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const handleLogout = async () => {
     try {
       // Call the logout API endpoint
-      const response = await fetch('/api/auth/logout', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
