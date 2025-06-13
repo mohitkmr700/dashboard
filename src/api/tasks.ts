@@ -11,7 +11,7 @@ const getBaseUrl = (endpoint: string) => {
 export async function getTasks(email: string): Promise<TasksResponse> {
   try {
     console.log('Fetching tasks for email:', email);
-    const response = await fetch(getBaseUrl('/api/tasks/list') + `?email=${encodeURIComponent(email)}`);
+    const response = await fetch(getBaseUrl('/api/task/list') + `?email=${encodeURIComponent(email)}`);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -30,7 +30,7 @@ export async function getTasks(email: string): Promise<TasksResponse> {
 export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'>): Promise<Task> {
   try {
     console.log('Creating task with data:', task);
-    const response = await fetch('/api/tasks/create', {
+    const response = await fetch('/api/task/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' |
 export async function deleteTask(id: string): Promise<void> {
   try {
     console.log('Deleting task with ID:', id);
-    const response = await fetch('/api/tasks/remove', {
+    const response = await fetch('/api/task/remove', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export async function deleteTask(id: string): Promise<void> {
 export async function updateTask(task: Task): Promise<Task> {
   try {
     console.log('Updating task with data:', task);
-    const response = await fetch('/api/tasks/update', {
+    const response = await fetch('/api/task/update', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

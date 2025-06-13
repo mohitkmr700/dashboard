@@ -27,9 +27,9 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       ));
     }
-    console.log('Fetching tasks from:', `${API_URL}/tasks?email=${email}`);
+    console.log('Fetching task from:', `${API_URL}/task?email=${email}`);
 
-    const response = await fetch(`${API_URL}/tasks/list?email=${email}`, {
+    const response = await fetch(`${API_URL}/task/list?email=${email}`, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -44,9 +44,9 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     return addCorsHeaders(NextResponse.json(data));
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    console.error('Error fetching task:', error);
     return addCorsHeaders(NextResponse.json(
-      { error: 'Failed to fetch tasks. Please check your API configuration.' },
+      { error: 'Failed to fetch task. Please check your API configuration.' },
       { status: 500 }
     ));
   }
@@ -55,9 +55,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Creating task at:', `${API_URL}/tasks/create`);
+    console.log('Creating task at:', `${API_URL}/task/create`);
 
-    const response = await fetch(`${API_URL}/tasks/create`, {
+    const response = await fetch(`${API_URL}/task/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Updating task at:', `${API_URL}/tasks/update`);
+    console.log('Updating task at:', `${API_URL}/task/update`);
 
-    const response = await fetch(`${API_URL}/tasks/update`, {
+    const response = await fetch(`${API_URL}/task/update`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -124,9 +124,9 @@ export async function DELETE(request: NextRequest) {
       ));
     }
 
-    console.log('Deleting task at:', `${API_URL}/tasks/delete?id=${taskId}`);
+    console.log('Deleting task at:', `${API_URL}/task/delete?id=${taskId}`);
 
-    const response = await fetch(`${API_URL}/tasks/delete?id=${taskId}`, {
+    const response = await fetch(`${API_URL}/task/delete?id=${taskId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
