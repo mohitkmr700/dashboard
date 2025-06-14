@@ -69,7 +69,7 @@ export default function LoginClient({ initialAuthState }: LoginClientProps) {
     
     try {
       console.log('Attempting login...');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,15 +79,21 @@ export default function LoginClient({ initialAuthState }: LoginClientProps) {
           email: email.trim(),
           password: password.trim()
         }),
-        credentials: 'include'
+        credentials: 'include',
+        mode: 'cors',
       });
 
       const data = await response.json();
       console.log('Login response:', data);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         throw new Error(data.error || 'Login failed');
       }
+
+      // Check if token is set in cookies
+      const cookies = document.cookie;
+      console.log('Cookies after login:', cookies);
 
       toast({
         title: 'Success',

@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { getUserEmail, getUserRole, getAuthTokenClient } from '@/lib/auth-client';
 
 export default function DashboardClient() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -40,6 +41,16 @@ export default function DashboardClient() {
     completionData: [] as { date: string; value: number }[],
     deadlineData: [] as { date: string; value: number }[]
   });
+
+  useEffect(() => {
+    // Debug token and cookie access
+    const token = getAuthTokenClient();
+    console.log('Raw token from cookie:', token);
+
+    const email = getUserEmail();
+    const role = getUserRole();
+    console.log('Decoded token data:', { email, role });
+  }, []);
 
   const fetchTasks = async () => {
     try {

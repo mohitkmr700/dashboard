@@ -30,19 +30,22 @@ export async function getTasks(email: string): Promise<TasksResponse> {
 export async function createTask(task: Omit<Task, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'>): Promise<Task> {
   try {
     console.log('Creating task with data:', task);
-    const response = await fetch('/api/task/create', {
+    const queryParams = new URLSearchParams({
+      title: task.title,
+      description: task.description,
+      progress: task.progress.toString(),
+      deadline: task.deadline,
+      is_done: task.is_done.toString(),
+      email: task.email,
+      create: 'true'
+    });
+
+    const response = await fetch(`/api/task/create-api?${queryParams.toString()}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        title: task.title,
-        description: task.description,
-        progress: task.progress,
-        deadline: task.deadline,
-        is_done: task.is_done,
-        email: task.email,
-      }),
       credentials: 'include',
     });
 

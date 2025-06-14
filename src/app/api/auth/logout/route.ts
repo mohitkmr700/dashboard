@@ -1,18 +1,32 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    
+    // Get the cookie from the incoming request
+    const cookie = request.headers.get('cookie');
+
+    const response = await fetch('https://algoarena.co.in/api/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Cookie': cookie || '', // Forward the cookie
+      },
+      credentials: 'include',
+    });
+
+    const data = await response.json();
+
     // Create response with cookie deletion
-    const response = NextResponse.json(
-      { message: 'Logged out successfully' },
-      { status: 200 }
-    );
+    const res = NextResponse.json(data, {
+      status: response.status,
+      headers: {
+        'Set-Cookie': response.headers.get('Set-Cookie') || '',
+      },
+    });
     
     // Delete the cookie by setting it to expire
-    response.cookies.set({
+    res.cookies.set({
       name: 'access_token',
       value: '',
       expires: new Date(0),
@@ -22,7 +36,7 @@ export async function POST() {
       sameSite: 'lax'
     });
     
-    return response;
+    return res;
   } catch (error) {
     console.error('Logout error:', error);
     return NextResponse.json(
