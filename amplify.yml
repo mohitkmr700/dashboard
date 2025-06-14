@@ -3,17 +3,22 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "📦 Installing Node.js v20..."
         - nvm install 20
         - nvm use 20
-        - node -v
+        - echo "🧪 Node version:" && node -v
+        - echo "🧪 NPM version:" && npm -v
+        - echo "📁 Installing dependencies..."
         - npm install
     build:
       commands:
+        - echo "🧹 Removing previous Next.js build cache..."
+        - rm -rf .next
+        - echo "🚀 Running Next.js production build..."
         - npm run build
   artifacts:
-    baseDirectory: .next
+    baseDirectory: .next/standalone
     files:
       - '**/*'
   cache:
-    paths:
-      - node_modules/**/*
+    paths: []

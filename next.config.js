@@ -4,6 +4,8 @@ const nextConfig = {
   trailingSlash: false,
   // Ensure the base path is set correctly
   basePath: '',
+  // Configure output for standalone deployment
+  output: 'standalone',
   // Add CORS headers for direct API calls
   async headers() {
     return [
@@ -17,6 +19,11 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  // Configure image domains if needed
+  images: {
+    domains: ['algoarena.co.in'],
+    unoptimized: true,
   },
 };
 
