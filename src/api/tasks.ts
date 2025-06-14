@@ -11,7 +11,7 @@ const getBaseUrl = (endpoint: string) => {
 export async function getTasks(email: string): Promise<TasksResponse> {
   try {
     console.log('Fetching tasks for email:', email);
-    const response = await fetch(getBaseUrl('/api/task/list') + `?email=${encodeURIComponent(email)}`);
+    const response = await fetch(getBaseUrl('/api/task/list=all') + `?email=${encodeURIComponent(email)}`);
     
     if (!response.ok) {
       const errorData = await response.json();

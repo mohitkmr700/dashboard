@@ -19,10 +19,10 @@ export async function OPTIONS() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Creating task at:', `${API_URL}/task/create`);
+    console.log('Creating task at:', `${API_URL}/task/create-api`);
     console.log('Request body:', body);
 
-    const response = await fetch(`${API_URL}/task/create`, {
+    const response = await fetch(`${API_URL}/task/create-api`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

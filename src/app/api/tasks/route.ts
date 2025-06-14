@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
     console.log('Fetching task from:', `${API_URL}/task?email=${email}`);
 
-    const response = await fetch(`${API_URL}/task/list?email=${email}`, {
+    const response = await fetch(`${API_URL}/task/list=all?email=${email}`, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -55,9 +55,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Creating task at:', `${API_URL}/task/create`);
+    console.log('Creating task at:', `${API_URL}/task/create-api`);
 
-    const response = await fetch(`${API_URL}/task/create`, {
+    const response = await fetch(`${API_URL}/task/create-api`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
