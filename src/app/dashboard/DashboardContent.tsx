@@ -1,12 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Table from '@/components/common/Table';
 import { Task, TableColumn } from '@/types/task';
 import { getTasks, deleteTask } from '@/api/tasks';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
-import CreateTaskDialog from '@/components/tasks/CreateTaskDialog';
-import EditTaskDialog from '@/components/tasks/EditTaskDialog';
 import { Check, X, Trash2, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -20,6 +17,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import CreateTaskDialog from '@/components/tasks/CreateTaskDialog';
+import EditTaskDialog from '@/components/tasks/EditTaskDialog';
+import Table from '@/components/common/Table';
 
 export default function DashboardContent() {
   const [tasks, setTasks] = useState<Task[]>([]);

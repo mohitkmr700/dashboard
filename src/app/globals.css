@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Import animations */
-@import 'tw-animate-css/dist/tw-animate.min.css';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
