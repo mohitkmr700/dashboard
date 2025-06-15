@@ -3,6 +3,18 @@ const nextConfig = {
   output: 'standalone',
   trailingSlash: false,
   basePath: '',
+  webpack: (config, { isServer }) => {
+    // Add source map support
+    config.devtool = 'source-map';
+    
+    // Ensure proper module resolution
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname, 'src'),
+    };
+    
+    return config;
+  },
   async headers() {
     return [
       {

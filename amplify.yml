@@ -3,22 +3,29 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "📦 Installing Node.js v20..."
-        - nvm install 20
-        - nvm use 20
-        - echo "🧪 Node version:" && node -v
-        - echo "🧪 NPM version:" && npm -v
-        - echo "📁 Installing dependencies..."
-        - npm install
+        - npm ci
+        - echo "Node version: $(node -v)"
+        - echo "NPM version: $(npm -v)"
+        - echo "Current directory: $(pwd)"
+        - echo "Directory contents: $(ls -la)"
+        - echo "Checking for tsconfig.json: $(cat tsconfig.json)"
     build:
       commands:
-        - echo "🧹 Removing previous Next.js build cache..."
-        - rm -rf .next
-        - echo "🚀 Running Next.js production build..."
-        - npm run build
+        - echo "Starting build process..."
+        - echo "Checking for @/ path aliases..."
+        - echo "Contents of src directory: $(ls -la src)"
+        - echo "Contents of src/components: $(ls -la src/components)"
+        - echo "Contents of src/api: $(ls -la src/api)"
+        - NODE_ENV=production npm run build
   artifacts:
-    baseDirectory: .next/standalone
+    baseDirectory: .next
     files:
       - '**/*'
+      - '../public/**/*'
+      - '../.next/static/**/*'
+      - '../.next/server/**/*'
+      - '../.next/standalone/**/*'
   cache:
-    paths: []
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
