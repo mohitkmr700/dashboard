@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "tw-animate-css";
+/* Import animations */
+@import 'tw-animate-css/dist/tw-animate.min.css';
 
 @custom-variant dark (&:is(.dark *));
 

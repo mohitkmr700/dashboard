@@ -4,13 +4,13 @@ frontend:
     preBuild:
       commands:
         - 'npm ci'
-        - 'npm install autoprefixer postcss tailwindcss --save'
+        - 'npm install autoprefixer postcss tailwindcss tw-animate-css --save'
         - 'echo "Node version: $(node -v)"'
         - 'echo "NPM version: $(npm -v)"'
         - 'echo "Current directory: $(pwd)"'
         - 'echo "Directory contents: $(ls -la)"'
         - 'echo "Checking for tsconfig.json: $(cat tsconfig.json)"'
-        - 'echo "Checking installed dependencies: $(npm list autoprefixer postcss tailwindcss)"'
+        - 'echo "Checking installed dependencies: $(npm list autoprefixer postcss tailwindcss tw-animate-css)"'
     build:
       commands:
         - 'echo "Starting build process..."'
