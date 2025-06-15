@@ -3,20 +3,20 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
-        - echo "Node version: $(node -v)"
-        - echo "NPM version: $(npm -v)"
-        - echo "Current directory: $(pwd)"
-        - echo "Directory contents: $(ls -la)"
-        - echo "Checking for tsconfig.json: $(cat tsconfig.json)"
+        - 'npm ci'
+        - 'echo "Node version: $(node -v)"'
+        - 'echo "NPM version: $(npm -v)"'
+        - 'echo "Current directory: $(pwd)"'
+        - 'echo "Directory contents: $(ls -la)"'
+        - 'echo "Checking for tsconfig.json: $(cat tsconfig.json)"'
     build:
       commands:
-        - echo "Starting build process..."
-        - echo "Checking for @/ path aliases..."
-        - echo "Contents of src directory: $(ls -la src)"
-        - echo "Contents of src/components: $(ls -la src/components)"
-        - echo "Contents of src/api: $(ls -la src/api)"
-        - NODE_ENV=production npm run build
+        - 'echo "Starting build process..."'
+        - 'echo "Checking for @/ path aliases..."'
+        - 'echo "Contents of src directory: $(ls -la src)"'
+        - 'echo "Contents of src/components: $(ls -la src/components)"'
+        - 'echo "Contents of src/api: $(ls -la src/api)"'
+        - 'NODE_ENV=production npm run build'
   artifacts:
     baseDirectory: .next
     files:
@@ -27,5 +27,5 @@ frontend:
       - '../.next/standalone/**/*'
   cache:
     paths:
-      - node_modules/**/*
-      - .next/cache/**/*
+      - 'node_modules/**/*'
+      - '.next/cache/**/*'
